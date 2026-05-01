@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Business Digital ID | SkillBloom</title>
+
+<style>
+body {
+  background:#f4f1ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Arial;
+}
+
+.id-card {
+  width:340px;
+  background:white;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  overflow:hidden;
+}
+
+.header {
+  background:#7b3fe4;
+  color:white;
+  padding:1rem;
+  text-align:center;
+}
+
+.body {
+  padding:1.2rem;
+  text-align:center;
+}
+
+.body img {
+  width:110px;
+  height:110px;
+  border-radius:12px;
+  border:3px solid #7b3fe4;
+  object-fit:cover;
+  margin-bottom:0.6rem;
+}
+
+.footer {
+  background:#f1ecff;
+  padding:0.7rem;
+  text-align:center;
+  font-size:0.85rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="id-card">
+  <div class="header">
+    <h2>SkillBloom</h2>
+    <p>Business Digital ID</p>
+  </div>
+
+  <div class="body">
+    <img id="logo">
+    <h3 id="businessName"></h3>
+    <p><strong>Business ID:</strong></p>
+    <p id="businessId"></p>
+  </div>
+
+  <div class="footer">
+    Verified Business Partner
+  </div>
+</div>
+
+<script>
+document.getElementById("logo").src = localStorage.businessLogo;
+document.getElementById("businessName").innerText = localStorage.businessName;
+document.getElementById("businessId").innerText = localStorage.businessId;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="getstart.html">Get Started</a></li>
+      <li><a href="searchtab.html" class="search-link"><i class="fas fa-magnifying-glass"></i> Search</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="login-btn active">Login</button>
+      <button class="start-btn"><a href="getstart.html">Get Started</a></button>
+    </div>
+  </nav>
+
+  <main>
+    <div class="animate-on-scroll" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 2rem;">
+      <div class="card" style="max-width: 450px; width: 100%;">
+        <h2>Secure Login</h2>
+        <form onsubmit="login(event)">
+          <div class="form-group">
+            <label for="username">Username or Email</label>
+            <input type="text" id="username" required placeholder="Enter username or email">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required placeholder="Enter your password">
+          </div>
+          <button type="submit" class="login-submit-btn">Login</button>
+        </form>
+        <div class="form-links">
+          <a href="#" class="form-link forgot-password">Forgot Password?</a>
+          <a href="getstart.html" class="form-link">Create Account</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+  <script>
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    async function login(event) {
+      event.preventDefault();
+      const email = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (!email || !password) {
+        alert('Fill email/password');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          if (data.user.role === 'student') {
+            window.location.href = "dashboard.html";
+          } else {
+            window.location.href = "business-dashboard.html";
+          }
+        } else {
+          alert(data.error || 'Login failed');
+        }
+      } catch (error) {
+        alert('Backend connection error - check if server running on port 5000');
+      }
+    }
+  </script>
+</body>
+</html>

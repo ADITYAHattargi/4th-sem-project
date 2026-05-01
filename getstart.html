@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Get Started | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#guide" class="active">Guide</a></li>
+      <li><a href="searchtab.html" class="search-link"><i class="fas fa-magnifying-glass"></i> Search</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="login-btn"><a href="login.html">Login</a></button>
+      <button class="start-btn active">Get Started</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero animate-on-scroll" style="padding: 6rem 2rem; text-align: center;">
+      <h1>Choose Your Path</h1>
+      <p style="font-size: 1.4rem; max-width: 700px; margin: 2rem auto 4rem; opacity: 0.9;">
+        Student looking to earn? Business hiring talent? SkillBloom works for both.
+      </p>
+      <div class="cards" style="max-width: 1000px; margin: auto;">
+        <div class="card">
+          <h3><i class="fas fa-graduation-cap"></i> I'm a Student</h3>
+          <p>Find flexible opportunities, build skills, earn while studying.</p>
+          <a href="studenregistation.html"><button class="start-btn" style="margin-top: 1rem;">Continue as Student</button></a>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-briefcase"></i> I'm Business Owner</h3>
+          <p>Hire campus talent for part-time, internships, projects.</p>
+          <a href="business-register.html"><button class="start-btn" style="margin-top: 1rem;">Continue as Business</button></a>
+        </div>
+      </div>
+    </section>
+
+    <section id="guide" class="animate-on-scroll" style="padding: 6rem 2rem;">
+      <h2>How SkillBloom Works</h2>
+      <div class="cards">
+        <div class="card">
+          <h3><i class="fas fa-graduation-cap"></i> For Students</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 0.5rem; opacity: 0.9;">• Create profile with skills</li>
+            <li style="margin-bottom: 0.5rem; opacity: 0.9;">• Browse local opportunities</li>
+            <li style="margin-bottom: 0.5rem; opacity: 0.9;">• Apply & earn experience</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-briefcase"></i> For Businesses</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 0.5rem; opacity: 0.9;">• Register business</li>
+            <li style="margin-bottom: 0.5rem; opacity: 0.9;">• Post requirements</li>
+            <li style="margin-bottom: 0.5rem; opacity: 0.9;">• Hire top talent fast</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+  <script>
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

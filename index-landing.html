@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillBloom - AI Career Guidance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Background with gradient and subtle animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: -1;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+            50% { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .get-started-btn {
+            padding: 0.8rem 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .get-started-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        /* Main Content */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            margin-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .primary-btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(254, 202, 87, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 10px 30px rgba(254, 202, 87, 0.4); }
+            50% { box-shadow: 0 10px 40px rgba(254, 202, 87, 0.6); }
+            100% { box-shadow: 0 10px 30px rgba(254, 202, 87, 0.4); }
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(254, 202, 87, 0.5);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+
+        .close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        /* Role Selection Cards */
+        .role-cards {
+            display: flex;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .role-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            backdrop-filter: blur(10px);
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            border-color: #667eea;
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+        }
+
+        .role-card.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #5a67d8;
+        }
+
+        .role-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .role-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Login Form */
+        .login-form {
+            display: none;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 3%;
+            }
+
+            .hero {
+                padding: 0 3%;
+                margin-top: 70px;
+            }
+
+            .role-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.7);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="#" class="logo">SkillBloom</a>
+        <button class="get-started-btn" onclick="openModal()">Login / Get Started</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>AI Career Guidance System</h1>
+        <p>Empowering students with personalized career paths and connecting business owners with top talent. Discover your potential with AI-driven insights and opportunities.</p>
+        <button class="primary-btn" onclick="openModal()">Login / Get Started</button>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="roleModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close" onclick="closeModal()">&times;</span>
+            
+            <div id="roleSelection">
+                <h2>Choose Your Role</h2>
+                <div class="role-cards">
+                    <div class="role-card" onclick="selectRole('student')">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>Student</h3>
+                        <p>Find career guidance and job opportunities</p>
+                    </div>
+                    <div class="role-card" onclick="selectRole('business')">
+                        <i class="fas fa-briefcase"></i>
+                        <h3>Business Owner</h3>
+                        <p>Discover top talent for your company</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loginForm" class="login-form">
+                <h2 id="formTitle">Student Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required>
+                    </div>
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+                <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                    Don't have an account? <a href="#" style="color: #667eea;">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedRole = '';
+
+        function openModal() {
+            document.getElementById('roleModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(event) {
+            document.getElementById('roleModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('roleSelection').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            selectedRole = '';
+            document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+        }
+
+        function selectRole(role) {
+            selectedRole = role;
+            document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            // Show login form
+            document.getElementById('roleSelection').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('formTitle').textContent = 
+                role === 'student' ? 'Student Login' : 'Business Owner Login';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation and demo login
+            if (email && password) {
+                alert(`Welcome ${selectedRole === 'student' ? 'Student' : 'Business Owner'}! 
+                       Logged in with ${email}`);
+                closeModal();
+                // Here you would typically redirect to dashboard
+                // window.location.href = `${selectedRole}-dashboard.html`;
+            } else {
+                alert('Please fill in all fields');
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+            }
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.15)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+    </script>
+</body>
+</html>

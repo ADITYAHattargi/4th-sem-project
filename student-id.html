@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Student ID | SkillBloom</title>
+
+<style>
+body {
+  background:#f4f1ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Arial, sans-serif;
+}
+
+.id-card {
+  width:320px;
+  background:white;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  overflow:hidden;
+}
+
+.id-header {
+  background:#7b3fe4;
+  color:white;
+  text-align:center;
+  padding:1rem;
+}
+
+.id-body {
+  padding:1.2rem;
+  text-align:center;
+}
+
+.id-body img {
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:3px solid #7b3fe4;
+  object-fit:cover;
+  margin-bottom:0.6rem;
+}
+
+.id-body h3 {
+  margin:0.4rem 0;
+}
+
+.id-footer {
+  background:#f1ecff;
+  padding:0.8rem;
+  text-align:center;
+  font-size:0.85rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="id-card">
+  <div class="id-header">
+    <h2>SkillBloom</h2>
+    <p>Student ID Card</p>
+  </div>
+
+  <div class="id-body">
+    <img id="photo">
+    <h3 id="name"></h3>
+    <p id="skill"></p>
+    <p><strong>ID:</strong> <span id="uid"></span></p>
+  </div>
+
+  <div class="id-footer">
+    Powered by Adi Studio
+  </div>
+</div>
+
+<script>
+document.getElementById("photo").src = localStorage.photo;
+document.getElementById("name").innerText = localStorage.name;
+document.getElementById("skill").innerText = localStorage.skill;
+document.getElementById("uid").innerText = localStorage.userId;
+</script>
+
+</body>
+</html>

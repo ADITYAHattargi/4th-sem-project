@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Login | SkillBloom</title>
+
+<style>
+body {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#f4f1ff;
+  font-family:Arial;
+}
+
+.login-box {
+  background:white;
+  padding:2rem;
+  border-radius:12px;
+  width:300px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+input, button {
+  width:100%;
+  padding:0.7rem;
+  margin-top:1rem;
+}
+
+button {
+  background:#7b3fe4;
+  color:white;
+  border:none;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>Student Login</h2>
+  <input type="text" id="uid" placeholder="Enter User ID">
+  <button onclick="login()">Login</button>
+</div>
+
+<script>
+function login() {
+  const uid = document.getElementById("uid").value;
+
+  if (uid === localStorage.userId) {
+    window.location.href = "dashboard.html";
+  } else {
+    alert("Invalid User ID");
+  }
+}
+</script>
+
+</body>
+</html>
