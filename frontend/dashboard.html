@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .opportunities {
+      margin-top: 2rem;
+    }
+
+    .opportunity-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .opportunity-card {
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 16px;
+      padding: 1rem;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .opportunity-card h4 {
+      margin: 0 0 0.35rem;
+      color: #fff;
+    }
+
+    .opportunity-card p {
+      margin: 0.35rem 0;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .status-pill {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+
+    .status-pill.accepted { color: #4ade80; }
+    .status-pill.rejected { color: #ff8a8a; }
+
+    .opportunity-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.9rem;
+    }
+
+    .opportunity-actions button {
+      width: auto;
+      min-width: 110px;
+      padding: 0.75rem 1rem;
+    }
+
+    .reject-btn {
+      background: rgba(255,255,255,0.14);
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="getstart.html">Get Started</a></li>
+      <li><a href="searchtab.html" class="search-link"><i class="fas fa-magnifying-glass"></i> Search</a></li>
+      <li><a href="create-post.html">Create Post</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="start-btn active" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main style="padding-top: 120px; padding: 2rem;">
+    <section class="animate-on-scroll" style="max-width: 800px; margin: auto;">
+      <div class="card" style="text-align: center;">
+        <h2>Welcome Back <span id="studentWelcomeName" style="color: #7b3fe4;"></span></h2>
+        <p style="opacity: 0.9; margin-bottom: 2rem;">Your SkillBloom Dashboard</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <img id="studentPhoto" src="" alt="Profile Photo" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1rem; display: none;">
+          <h3><i class="fas fa-user"></i> Name & Role</h3>
+          <p id="studentName" style="color: #7b3fe4; font-size: 1.3rem;"></p>
+          <p id="studentRole" style="opacity: 0.8; margin-bottom: 1rem;"></p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-envelope"></i> Email</h3>
+          <p id="studentEmail"></p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-tags"></i> Skills</h3>
+          <p id="studentSkills" style="font-family: monospace; font-size: 0.95rem;"></p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+          <p id="studentLocation" style="font-size: 1.1rem;"></p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-check-circle"></i> Status</h3>
+          <p style="color: #4ade80; font-weight: 600;">✅ Verified Student</p>
+          <a href="student-id.html" style="display: inline-block; margin-top: 1rem;"><button class="start-btn" style="width: 100%;">🪪 View Digital ID</button></a>
+        </div>
+      </div>
+      <div class="card opportunities">
+        <h3><i class="fas fa-briefcase"></i> Business Invites</h3>
+        <div id="studentConnections" class="opportunity-list">
+          <p style="opacity: 0.85;">Loading invites...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+  <script>
+    function escapeHTML(value) {
+      return String(value || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    async function apiFetch(url, options = {}) {
+      const token = localStorage.getItem('token');
+      const headers = {
+        ...(options.headers || {}),
+        Authorization: `Bearer ${token}`
+      };
+
+      if (options.body && !(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+      }
+
+      const response = await fetch(url, { ...options, headers });
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.error || 'Request failed');
+      }
+
+      return data;
+    }
+
+    // Load user data from backend
+    async function loadUserData() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('No token - login again');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/auth/user', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          const user = data.user || {};
+          const profileData = user.profileData || {};
+          const skills = Array.isArray(user.skills) ? user.skills : Array.isArray(profileData.skills) ? profileData.skills : [];
+          const displayName = user.name || profileData.name || 'Student';
+          const photoUrl = user.profilePhoto || user.photoUrl || profileData.photoUrl || '';
+
+          localStorage.setItem('skillbloom_auth_user', JSON.stringify(user));
+
+          document.getElementById("studentWelcomeName").innerText = displayName;
+          document.getElementById("studentName").innerText = displayName;
+          document.getElementById("studentEmail").innerText = user.email || 'Not set';
+          document.getElementById("studentRole").innerText = (user.role || 'student').toUpperCase();
+          document.getElementById("studentSkills").innerText = skills.length ? skills.join(', ') : 'No skills';
+          document.getElementById("studentLocation").innerText = user.city || profileData.city || 'Not set';
+
+          if (photoUrl) {
+            document.getElementById("studentPhoto").src = photoUrl;
+            document.getElementById("studentPhoto").style.display = 'block';
+          }
+
+          loadStudentConnections();
+        } else {
+          alert(data.error);
+          localStorage.removeItem('token');
+          window.location.href = 'login.html';
+        }
+      } catch (error) {
+        console.error('Fetch user error:', error);
+        alert('Server error or no backend');
+        window.location.href = 'login.html';
+      }
+    }
+
+    async function loadStudentConnections() {
+      const container = document.getElementById('studentConnections');
+
+      try {
+        const connections = await apiFetch('/api/connections/student');
+        renderStudentConnections(connections);
+      } catch (error) {
+        container.innerHTML = `<p style="opacity: 0.85;">${escapeHTML(error.message)}</p>`;
+      }
+    }
+
+    function renderStudentConnections(connections) {
+      const container = document.getElementById('studentConnections');
+
+      if (!connections.length) {
+        container.innerHTML = '<p style="opacity: 0.85;">No business invites yet.</p>';
+        return;
+      }
+
+      container.innerHTML = connections.map(connection => `
+        <div class="opportunity-card">
+          <h4>${escapeHTML(connection.business.name)}</h4>
+          <p>${escapeHTML(connection.business.category || 'Business')} • ${escapeHTML(connection.business.city || 'Location not set')}</p>
+          <p>${escapeHTML(connection.message || 'No message')}</p>
+          <span class="status-pill ${escapeHTML(connection.status)}">${escapeHTML(connection.status)}</span>
+          ${connection.status === 'pending' ? `
+            <div class="opportunity-actions">
+              <button class="login-submit-btn" onclick="respondToInvite(${Number(connection.id)}, 'accepted')">Accept</button>
+              <button class="login-submit-btn reject-btn" onclick="respondToInvite(${Number(connection.id)}, 'rejected')">Reject</button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function respondToInvite(id, status) {
+      try {
+        await apiFetch(`/api/connections/${id}/status`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status })
+        });
+        loadStudentConnections();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadUserData);
+
+    function logout() {
+      if (confirm('Logout?')) localStorage.clear(); window.location.href = 'index.html';
+    }
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.target.classList.add('visible'));
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

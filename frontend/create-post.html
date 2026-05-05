@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Post | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html" id="dashboardLink">Dashboard</a></li>
+      <li><a href="searchtab.html" class="search-link"><i class="fas fa-magnifying-glass"></i> Search</a></li>
+      <li><a href="feed.html" class="active">Feed</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="start-btn" onclick="goDashboard()">Dashboard</button>
+      <button class="login-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main style="padding-top: 120px; display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 2rem;">
+    <div class="card animate-on-scroll" style="max-width: 550px; width: 100%;">
+      <h2><i class="fas fa-plus"></i> Create Post</h2>
+      <input type="text" id="title" placeholder="Title">
+      <textarea id="caption" rows="5" placeholder="What's on your mind? Hiring, skills showcase, announcement..."></textarea>
+      
+      <label style="margin-top: 1rem; display: block;">Add Photo</label>
+      <input type="file" id="media" accept="image/*">
+      
+      <div id="preview" style="margin-top: 1.5rem; min-height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed rgba(255,255,255,0.3); border-radius: 12px; background: rgba(255,255,255,0.05);">
+        <p style="opacity: 0.7;">Preview will appear here</p>
+      </div>
+      
+      <button onclick="createPost()" class="login-submit-btn" id="postButton">Post Now</button>
+      <button onclick="location.href='feed.html'" class="login-btn" style="background: rgba(255,255,255,0.1); margin-top: 1rem;">Cancel</button>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+  <script>
+    const authUser = JSON.parse(localStorage.getItem('skillbloom_auth_user') || 'null');
+    const dashboardHref = authUser?.role === 'business' ? 'business-dashboard.html' : 'dashboard.html';
+    document.getElementById('dashboardLink').href = dashboardHref;
+
+    function goDashboard() {
+      location.href = dashboardHref;
+    }
+
+    // Media preview
+    document.getElementById('media').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const preview = document.getElementById('preview');
+      if (file) {
+        const url = URL.createObjectURL(file);
+        if (file.type.startsWith('image/')) {
+          preview.innerHTML = `<img src="${url}" style="width: 100%; border-radius: 12px; max-height: 300px; object-fit: cover;">`;
+        }
+      }
+    });
+
+    async function createPost() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Login before posting');
+        location.href = 'login.html';
+        return;
+      }
+
+      const title = document.getElementById('title').value.trim();
+      const caption = document.getElementById('caption').value.trim();
+      const media = document.getElementById('media').files[0];
+      if (!title && !caption) {
+        alert('Add a title or caption');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('title', title || caption.slice(0, 80));
+      formData.append('caption', caption);
+      if (media) formData.append('media', media);
+
+      postButton.disabled = true;
+      postButton.innerText = 'Posting...';
+
+      try {
+        const response = await fetch('/api/posts', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Post failed');
+        location.href = 'feed.html';
+      } catch (error) {
+        alert(error.message);
+        postButton.disabled = false;
+        postButton.innerText = 'Post Now';
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      location.href = 'index.html';
+    }
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.target.classList.add('visible'));
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

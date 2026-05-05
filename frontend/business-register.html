@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Registration | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .business-register-main {
+      padding: 140px 2rem 2rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: 80vh;
+    }
+
+    .business-card {
+      max-width: 700px;
+      width: 100%;
+    }
+
+    .business-card h2 {
+      margin-bottom: 2rem;
+    }
+
+    .business-card > label,
+    .business-card #otpSection label,
+    .business-card #passwordSection label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    .shop-type-options {
+      display: flex;
+      gap: 1.25rem;
+      margin-top: 0.75rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .option-label,
+    .consent-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .business-card input[type="radio"],
+    .business-card input[type="checkbox"] {
+      width: 1.05rem;
+      height: 1.05rem;
+      min-width: 1.05rem;
+      margin: 0;
+      padding: 0;
+      border-radius: 50%;
+      box-shadow: none;
+      accent-color: #7b3fe4;
+      cursor: pointer;
+    }
+
+    .business-card input[type="checkbox"] {
+      border-radius: 4px;
+    }
+
+    .consent-row {
+      margin-top: 1rem;
+    }
+
+    .consent-row + .consent-row {
+      margin-top: 0.65rem;
+    }
+
+    .consent-row label {
+      margin: 0;
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .business-register-main {
+        padding: 180px 1rem 1rem;
+      }
+
+      .business-card {
+        padding: 2rem 1.25rem;
+      }
+
+      .shop-type-options {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="getstart.html" class="active">Get Started</a></li>
+      <li><a href="searchtab.html" class="search-link"><i class="fas fa-magnifying-glass"></i> Search</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="login-btn"><a href="login.html">Login</a></button>
+      <button class="start-btn"><a href="getstart.html">Home</a></button>
+    </div>
+  </nav>
+
+  <main class="business-register-main">
+    <div class="card business-card animate-on-scroll">
+      <h2><i class="fas fa-briefcase"></i> Business Registration</h2>
+
+      <!-- Logo Upload -->
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <img id="logoPreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='12' fill='%237b3fe4'/%3E%3Ctext x='60' y='67' font-family='Inter,Arial,sans-serif' font-size='22' font-weight='700' fill='white' text-anchor='middle'%3ELogo%3C/text%3E%3C/svg%3E" alt="Business Logo" style="width: 120px; height: 120px; border-radius: 12px; object-fit: cover; border: 3px solid #7b3fe4; box-shadow: var(--glow-purple);">
+        <label for="logo" style="display: block; margin-top: 1rem; color: #7b3fe4; font-weight: 600; cursor: pointer; font-size: 0.95rem;">Upload Business Logo / Shop Photo</label>
+        <input type="file" id="logo" accept="image/*" style="display: none;">
+      </div>
+
+      <label>Owner Full Name *</label>
+      <input type="text" id="ownerName">
+
+      <label>Email *</label>
+      <input type="email" id="email">
+
+      <label>Shop / Business Name *</label>
+      <input type="text" id="shopName">
+
+      <label>Shop Category *</label>
+      <select id="shopCategory">
+        <option value="">-- Select Category --</option>
+        <option>Textile & Clothing</option>
+        <option>Hardware Store</option>
+        <option>Electronics</option>
+        <option>Grocery & Supermarket</option>
+        <option>Medical / Pharmacy</option>
+        <option>Restaurant / Cafe</option>
+        <option>Beauty & Salon</option>
+        <option>Furniture</option>
+        <option>Mobile & Accessories</option>
+        <option>Book Store & Stationery</option>
+        <option>Automobile</option>
+        <option>Service Provider</option>
+      </select>
+
+      <label>Shop Type *</label>
+      <div class="shop-type-options">
+        <label class="option-label"><input type="radio" name="shopType" value="Normal Shop"> Normal Shop</label>
+        <label class="option-label"><input type="radio" name="shopType" value="Showroom"> Showroom</label>
+        <label class="option-label"><input type="radio" name="shopType" value="Warehouse"> Warehouse</label>
+      </div>
+
+      <!-- Additional fields similarly styled, hidden sections using style.display -->
+
+      <label>Mobile Number *</label>
+      <input type="tel" id="phone" maxlength="10" placeholder="10-digit number">
+
+      <div class="consent-row">
+        <input type="checkbox" id="terms">
+        <label for="terms">Accept Terms</label>
+      </div>
+
+      <div class="consent-row">
+        <input type="checkbox" id="privacy">
+        <label for="privacy">Accept Privacy Policy</label>
+      </div>
+
+      <p id="error" style="color: #ff6b6b; margin-top: 1rem;"></p>
+
+      <button onclick="sendOTP()" class="login-submit-btn">Send OTP</button>
+
+      <div id="otpSection" style="display: none; margin-top: 2rem;">
+        <label>Enter OTP</label>
+        <input type="text" id="otp">
+        <button onclick="verifyOTP()" class="login-submit-btn" style="margin-top: 1rem;">Verify OTP</button>
+      </div>
+
+      <div id="passwordSection" style="display: none; margin-top: 2rem;">
+        <label>Create Password</label>
+        <input type="password" id="password">
+        <label>Confirm Password</label>
+        <input type="password" id="confirmPassword">
+        <button onclick="createPassword()" class="login-submit-btn" style="margin-top: 1rem;">Create Account</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+  <script>
+    // Logo preview
+    document.getElementById('logo').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (file) document.getElementById('logoPreview').src = URL.createObjectURL(file);
+    });
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+    function getSelectedShopType() {
+      const selected = document.querySelector('input[name="shopType"]:checked');
+      return selected ? selected.value : '';
+    }
+
+    function getBusinessFormData() {
+      return {
+        ownerName: document.getElementById('ownerName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        businessName: document.getElementById('shopName').value.trim(),
+        category: document.getElementById('shopCategory').value,
+        shopType: getSelectedShopType(),
+        phone: document.getElementById('phone').value.trim(),
+        logo: document.getElementById('logoPreview').src
+      };
+    }
+
+    function saveBusinessProfile(profile) {
+      const businesses = JSON.parse(localStorage.getItem('skillbloom_businesses') || '[]');
+      const existingIndex = businesses.findIndex(item => item.businessId === profile.businessId || item.email === profile.email);
+
+      if (existingIndex >= 0) {
+        businesses[existingIndex] = profile;
+      } else {
+        businesses.push(profile);
+      }
+
+      localStorage.setItem('skillbloom_businesses', JSON.stringify(businesses));
+      localStorage.setItem('skillbloom_current_business', JSON.stringify(profile));
+
+      localStorage.businessId = profile.businessId;
+      localStorage.businessName = profile.businessName;
+      localStorage.businessCategory = profile.category;
+      localStorage.businessPhone = profile.phone;
+      localStorage.businessLogo = profile.logo;
+    }
+
+    function sendOTP() {
+      const profile = getBusinessFormData();
+      const error = document.getElementById('error');
+      error.textContent = '';
+
+      if (!profile.ownerName || !profile.email || !profile.businessName || !profile.category || !profile.shopType || !profile.phone) {
+        error.textContent = 'Please fill all required business details.';
+        return;
+      }
+
+      if (!document.getElementById('terms').checked || !document.getElementById('privacy').checked) {
+        error.textContent = 'Please accept Terms and Privacy Policy.';
+        return;
+      }
+
+      alert("OTP Sent!");
+      document.getElementById("otpSection").style.display = "block";
+    }
+
+    function verifyOTP() {
+      if (!document.getElementById('otp').value.trim()) {
+        alert('Please enter OTP');
+        return;
+      }
+
+      document.getElementById("passwordSection").style.display = "block";
+    }
+
+    function createPassword() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!password || password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+
+      const businessId = "SB-BIZ-" + Math.floor(100000 + Math.random() * 900000);
+      const profile = {
+        ...getBusinessFormData(),
+        businessId,
+        password,
+        address: '',
+        timing: 'Open now',
+        highlight: 'Add hiring update'
+      };
+
+      saveBusinessProfile(profile);
+      alert("Business Registered! ID: " + businessId);
+      window.location.href = "business-dashboard.html";
+    }
+  </script>
+</body>
+</html>

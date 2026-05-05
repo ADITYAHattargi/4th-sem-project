@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .search-section {
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+
+    .search-panel {
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      overflow: visible;
+    }
+
+    .search-panel h2 {
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+      font-size: clamp(1.45rem, 6vw, 2rem);
+    }
+
+    .search-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(180px, 0.8fr);
+      gap: 1rem;
+      margin-top: 2rem;
+      align-items: end;
+    }
+
+    .search-controls button {
+      min-height: 58px;
+    }
+
+    @media (max-width: 760px) {
+      .search-section {
+        padding: 4rem 1rem;
+      }
+
+      .search-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .search-controls button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="getstart.html">Get Started</a></li>
+      <li><a href="#search" class="active">Search</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="login-btn" id="secondaryNavButton"><a href="login.html">Login</a></button>
+      <button class="start-btn" id="primaryNavButton"><a href="getstart.html">Get Started</a></button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Search Box -->
+    <section id="search" class="animate-on-scroll search-section">
+      <div class="card search-panel">
+        <h2>🔍 Find Talent & Opportunities</h2>
+        <div class="search-controls">
+          <select id="type" style="padding: 1rem;">
+            <option value="">Role</option>
+            <option value="student">Students</option>
+            <option value="business">Businesses</option>
+          </select>
+          <select id="skill" style="padding: 1rem;">
+            <option value="">Skill</option>
+            <option>Content Creation</option>
+            <option>Social Media</option>
+            <option>Social Media Marketing</option>
+            <option>Event Management</option>
+            <option>Dancing</option>
+            <option>Acting</option>
+            <option>Photography</option>
+            <option>Standup</option>
+          </select>
+          <input type="text" id="location" placeholder="City / Keyword" style="padding: 1rem;">
+          <button onclick="performSearch()" class="start-btn" style="padding: 1rem 2rem; font-size: 1rem;">Search</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results -->
+    <section class="animate-on-scroll">
+      <h2 style="text-align: center; margin-bottom: 2rem;">Top Matches</h2>
+      <div id="results" class="cards" style="max-width: 1200px; margin: auto;">
+        <div class="card" style="text-align: center;">
+          <p style="opacity: 0.85;">Loading profiles...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+    <script>
+    const defaultPhoto = 'https://i.pravatar.cc/150';
+    const authUser = JSON.parse(localStorage.getItem('skillbloom_auth_user') || 'null');
+    const token = localStorage.getItem('token');
+
+    function getDashboardHref() {
+      return authUser?.role === 'business' ? 'business-dashboard.html' : 'dashboard.html';
+    }
+
+    function setupNav() {
+      if (!token || !authUser) return;
+
+      document.getElementById('secondaryNavButton').innerHTML = '<a href="feed.html">Feed</a>';
+      document.getElementById('primaryNavButton').innerHTML = `<a href="${getDashboardHref()}">Dashboard</a>`;
+    }
+
+    function escapeHTML(value) {
+      return String(value || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function normalizeProfile(profile) {
+      const profileData = profile.profileData || {};
+      const skills = Array.isArray(profile.skills) && profile.skills.length
+        ? profile.skills
+        : [profile.businessCategory || profileData.category || profileData.industry || 'Profile'];
+
+      return {
+        id: profile.id,
+        name: profile.role === 'business'
+          ? profile.businessName || profile.name
+          : profile.name,
+        role: profile.role || 'student',
+        city: profile.city || profileData.city || profileData.address || 'Location not set',
+        skills,
+        photo: profile.profilePhoto || profile.photoUrl || profileData.logo || defaultPhoto
+      };
+    }
+
+    function renderProfileAction(profile) {
+      if (!token || !authUser) {
+        return '<button class="start-btn" onclick="location.href=\'login.html\'" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Login to Connect</button>';
+      }
+
+      if (authUser.role === 'business' && profile.role === 'student') {
+        return `<button class="start-btn" onclick="inviteStudent(${Number(profile.id)})" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Invite Student</button>`;
+      }
+
+      if (authUser.role === 'student' && profile.role === 'business') {
+        return '<span style="opacity: 0.8; font-size: 0.9rem;">Businesses can invite you from their dashboard</span>';
+      }
+
+      return '<span style="opacity: 0.8; font-size: 0.9rem;">Profile matched</span>';
+    }
+
+    function renderProfiles(profiles) {
+      const container = document.getElementById('results');
+
+      if (!profiles.length) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center;">
+            <h3>No matches found</h3>
+            <p style="opacity: 0.85;">Try a different skill or city.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = profiles.map(normalizeProfile).map(profile => {
+        const skills = profile.skills.map(skill => `
+          <span style="display: inline-block; background: rgba(123,63,228,0.2); color: #7b3fe4; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; margin: 0.25rem 0.25rem 0 0;">${escapeHTML(skill)}</span>
+        `).join('');
+
+        return `
+          <div class="card">
+            <img src="${escapeHTML(profile.photo)}" alt="${escapeHTML(profile.name)}" style="width: 80px; height: 80px; border-radius: 50%; float: left; margin-right: 1rem; object-fit: cover;">
+            <h3>${escapeHTML(profile.name)}</h3>
+            <p style="opacity: 0.9; margin-bottom: 0.5rem;">${escapeHTML(profile.role.toUpperCase())} • ${escapeHTML(profile.city)}</p>
+            ${skills}
+            <div style="clear: both; margin-top: 1rem;">
+              ${renderProfileAction(profile)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function inviteStudent(studentId) {
+      const message = prompt('Message for the student:', 'We would like to connect for an opportunity.');
+      if (message === null) return;
+
+      try {
+        const response = await fetch('/api/connections', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ studentId, message })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Invite failed');
+        alert('Invite sent');
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function performSearch() {
+      const type = document.getElementById('type').value;
+      const skill = document.getElementById('skill').value;
+      const location = document.getElementById('location').value.trim();
+      const params = new URLSearchParams();
+
+      if (type) params.set('role', type);
+      if (skill) params.set('skills', skill);
+      if (location) params.set('city', location);
+
+      const container = document.getElementById('results');
+      container.innerHTML = `
+        <div class="card" style="text-align: center;">
+          <p style="opacity: 0.85;">Searching...</p>
+        </div>
+      `;
+
+      try {
+        const response = await fetch(`/api/profiles?${params.toString()}`);
+        const profiles = await response.json();
+
+        if (!response.ok) {
+          throw new Error(profiles.error || 'Search failed');
+        }
+
+        renderProfiles(Array.isArray(profiles) ? profiles : []);
+      } catch (error) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center;">
+            <h3>Search unavailable</h3>
+            <p style="opacity: 0.85;">${escapeHTML(error.message)}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+      setupNav();
+      performSearch();
+    });
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillBloom | Campus Opportunities Made Simple</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #7b3fe4 0%, #5e2edc 50%, #4a1fc6 100%);
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-blur: blur(20px);
+      --glow-purple: 0 0 20px rgba(123, 63, 228, 0.6);
+      --text-glow: 0 0 10px rgba(123, 63, 228, 0.3);
+      --dark-bg: linear-gradient(135deg, #0a0a23 0%, #1a0d2e 50%, #2a1b4d 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--dark-bg);
+      color: #fff;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 80%, rgba(120,119,198,0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255,119,198,0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 40%, rgba(120,219,255,0.3) 0%, transparent 50%);
+      z-index: -1;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(1deg); }
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero.animate-on-scroll {
+      opacity: 1;
+      transform: none;
+    }
+
+    a { 
+      text-decoration: none; 
+      color: inherit; 
+    }
+
+    /* Navbar - Glassmorphism */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 1000;
+      box-shadow: var(--glow-purple);
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+
+    nav ul li a {
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #fff;
+      text-shadow: var(--text-glow);
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-gradient);
+      transition: width 0.3s;
+    }
+
+    nav ul li a:hover::after {
+      width: 100%;
+    }
+
+    /* Search Button */
+    .search-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.6rem 1.2rem;
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .search-link:hover {
+      background: var(--primary-gradient);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-purple);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .login-btn {
+      padding: 0.7rem 1.4rem;
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .login-btn:hover {
+      background: var(--primary-gradient);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-purple);
+    }
+
+    .login-btn a {
+      color: inherit;
+    }
+
+    .start-btn {
+      padding: 0.7rem 1.6rem;
+      background: var(--primary-gradient);
+      color: #fff;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--glow-purple);
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .start-btn:hover::before {
+      left: 100%;
+    }
+
+    .start-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(123,63,228,0.6);
+    }
+
+    main {
+      padding-top: 120px;
+    }
+
+    /* Hero Section - Premium */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+      padding: 6rem 2rem;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--primary-gradient);
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    .hero > * {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      text-shadow: var(--text-glow);
+      overflow-wrap: break-word;
+    }
+
+    .hero p {
+      font-size: 1.4rem;
+      margin-bottom: 3rem;
+      max-width: 500px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-buttons button {
+        width: 100%;
+      }
+    }
+
+    .hero-images {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .hero-images img:first-child {
+      grid-column: 1 / -1;
+      height: 300px;
+    }
+
+    .hero-images img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+      transition: transform 0.5s ease;
+    }
+
+    .hero-images img:hover {
+      transform: scale(1.05) rotate(1deg);
+    }
+
+    section {
+      padding: 6rem 2rem;
+      max-width: 1400px;
+      margin: auto;
+      scroll-margin-top: 120px;
+    }
+
+    .section-anchor {
+      display: block;
+      position: relative;
+      top: -120px;
+      visibility: hidden;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 4rem;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      padding: 2.5rem;
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--primary-gradient);
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.3), var(--glow-purple);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    .card h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .card p {
+      opacity: 0.9;
+      line-height: 1.7;
+    }
+
+    .about {
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 32px;
+      padding: 4rem;
+      text-align: center;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .about p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      opacity: 0.9;
+    }
+
+    .cta {
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      text-align: center;
+      padding: 5rem 2rem;
+      border-radius: 32px;
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+
+    .cta h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 2rem;
+    }
+
+    .cta button {
+      padding: 1rem 2.5rem;
+      background: var(--primary-gradient);
+      color: #fff;
+      border-radius: 16px;
+      font-size: 1.2rem;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: var(--glow-purple);
+      transition: all 0.3s;
+    }
+
+    .cta button:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 25px 50px rgba(123,63,228,0.7);
+    }
+
+    /* Enhanced Login Modal */
+    .login-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .login-modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 3rem;
+      border-radius: 24px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 50px 100px rgba(0,0,0,0.5), var(--glow-purple);
+    }
+
+    .login-modal-close {
+      position: absolute;
+      right: 1.5rem;
+      top: 1.5rem;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .login-modal-close:hover {
+      color: #fff;
+      transform: rotate(90deg);
+      text-shadow: var(--text-glow);
+    }
+
+    .role-cards {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .role-card {
+      padding: 2rem;
+      backdrop-filter: var(--glass-blur);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+    }
+
+    .role-card:hover, .role-card.selected {
+      background: rgba(123,63,228,0.2);
+      border-color: #7b3fe4;
+      transform: translateY(-8px);
+      box-shadow: var(--glow-purple);
+    }
+
+    .role-card i {
+      font-size: 3rem;
+      color: #7b3fe4;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 10px rgba(123,63,228,0.5));
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      backdrop-filter: var(--glass-blur);
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      font-size: 1rem;
+      color: #fff;
+      transition: all 0.3s;
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #7b3fe4;
+      box-shadow: var(--glow-purple);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .login-submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--glow-purple);
+      transition: all 0.3s;
+    }
+
+    .login-submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(123,63,228,0.7);
+    }
+
+    .form-links {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .form-link {
+      display: block;
+      margin: 0.8rem 0;
+      color: rgba(255,255,255,0.9);
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .form-link:hover {
+      color: #e4de3f;
+      text-shadow: var(--text-glow);
+    }
+
+    .forgot-password {
+      color: rgba(255, 255, 255, 0.864);
+    }
+
+    .forgot-password:hover {
+      color: hsl(228, 75%, 57%);
+    }
+
+    /* Hero Login Button */
+    .login-hero-btn {
+      padding: 0.7rem 1.6rem;
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .login-hero-btn:hover {
+      background: var(--primary-gradient);
+      transform: translateY(-2px);
+      box-shadow: var(--glow-purple);
+    }
+
+    footer {
+      margin-top: 6rem;
+      padding: 3rem 2rem;
+      backdrop-filter: var(--glass-blur);
+      background: var(--glass-bg);
+      border-top: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+    }
+
+    /* Responsive */
+    @media(max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+      }
+    }
+
+    @media(max-width: 768px) {
+      nav {
+        padding: 1rem;
+        flex-wrap: wrap;
+        gap: 0.8rem 1rem;
+      }
+
+      nav ul {
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        flex: 1 1 100%;
+        min-width: 0;
+        order: 2;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+      }
+
+      .nav-buttons {
+        order: 3;
+        flex: 1 1 100%;
+        justify-content: center;
+      }
+
+      main {
+        padding-top: 170px;
+      }
+
+      .hero {
+        padding: 4rem 1.25rem;
+        min-height: auto;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.35rem, 10vw, 3rem);
+        max-width: 100%;
+      }
+
+      section {
+        padding: 4rem 1rem;
+      }
+
+      .hero-images {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-images img,
+      .hero-images img:first-child {
+        grid-column: auto;
+        height: 240px;
+      }
+
+      .role-cards {
+        flex-direction: column;
+      }
+
+      .login-modal-content {
+        padding: 2rem 1.5rem;
+        margin: 2rem;
+      }
+    }
+
+    @media(max-width: 640px) {
+      nav ul li:last-child {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      main {
+        padding-top: 220px;
+      }
+
+      .hero {
+        display: block;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      section {
+        scroll-margin-top: 220px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 9vw, 2.35rem);
+        max-width: 21rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero p,
+      .hero-buttons,
+      .hero-images {
+        max-width: 21rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    @media(max-width: 480px) {
+      .nav-buttons {
+        flex-direction: row;
+        width: 100%;
+        gap: 0.5rem;
+      }
+
+      .nav-buttons button {
+        flex: 1;
+        padding-left: 0.8rem;
+        padding-right: 0.8rem;
+      }
+
+      .search-link {
+        padding: 0.5rem 0.85rem;
+      }
+
+      nav ul {
+        gap: 0.6rem 0.75rem;
+      }
+
+      nav ul li:last-child {
+        flex-basis: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      main {
+        padding-top: 220px;
+      }
+
+      .hero {
+        padding-top: 3rem;
+      }
+
+      .hero p {
+        font-size: 1.05rem;
+      }
+
+      .login-modal-content {
+        width: calc(100% - 2rem);
+        margin: 0;
+      }
+    }
+  </style>
+
+  <script>
+    let selectedRole = '';
+
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLoginModal(event) {
+      document.getElementById('loginModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+      document.getElementById('roleSelection').style.display = 'block';
+      document.getElementById('loginForm').style.display = 'none';
+      selectedRole = '';
+      document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+    }
+
+    function selectRole(role, event) {
+      selectedRole = role;
+      document.querySelectorAll('.role-card').forEach(card => card.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      document.getElementById('roleSelection').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('formTitle').textContent = role === 'student' ? 'Student Login' : 'Business Login';
+      updateFormLinks();
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      const userId = document.getElementById('userId').value.trim();
+      const password = document.getElementById('password').value;
+      if (!userId || !password) {
+        alert('Please enter User ID and password');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userId, password })
+        });
+        const data = await response.json();
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Login failed');
+        }
+        if (selectedRole && data.user.role !== selectedRole) {
+          throw new Error(`This account is registered as ${data.user.role}. Choose the correct role.`);
+        }
+
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('skillbloom_auth_user', JSON.stringify(data.user));
+
+        if (data.user.role === 'business') {
+          localStorage.setItem('skillbloom_current_business', JSON.stringify({
+            id: data.user.id,
+            businessId: data.user.businessId || `BUS-${data.user.id}`,
+            businessName: data.user.businessName || data.user.name,
+            ownerName: data.user.name,
+            email: data.user.email,
+            category: data.user.businessCategory || 'Business',
+            phone: data.user.phone || '',
+            address: data.user.city || '',
+            logo: data.user.profilePhoto || data.user.photoUrl || ''
+          }));
+          window.location.href = 'business-dashboard.html';
+          return;
+        }
+
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function updateFormLinks() {
+      const createLink = document.getElementById('createAccountLink');
+      if (selectedRole === 'student') {
+        createLink.href = 'studenregistation.html';
+        createLink.textContent = "Don't have an account? Create Account";
+      } else {
+        createLink.href = 'business-register.html';
+        createLink.textContent = "Don't have an account? Create Business Account";
+      }
+    }
+
+    // Scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+      });
+    });
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      if (event.target.classList.contains('login-modal')) {
+        closeLoginModal();
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <nav>
+    <div class="logo">SkillBloom</div>
+
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li>
+        <a href="searchtab.html" class="search-link">
+          <i class="fas fa-magnifying-glass"></i> Search
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-buttons">
+      <button class="login-btn">
+        <a href="login.html" style="color: inherit; text-decoration: none;">Login</a>
+      </button>
+      <button class="start-btn">
+        <a href="getstart.html" style="color: inherit; text-decoration: none;">Get Started</a>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero animate-on-scroll">
+      <div>
+        <h1>Campus Opportunities Made Simple</h1>
+        <p>
+          SkillBloom connects students with nearby businesses for part-time work,
+          internships, and freelance opportunities. Unlock your potential today.
+        </p>
+        <div class="hero-buttons">
+          <button class="start-btn">
+            <a href="getstart.html" style="color: inherit; text-decoration: none;">Start Your Journey <i class="fas fa-rocket"></i></a>
+          </button>
+          <button class="login-hero-btn" onclick="openLoginModal(); return false;">Login</button>
+        </div>
+      </div>
+      <div class="hero-images">
+        <img src="assets/images/SKILL BLOOM.jpg" alt="Students collaborating">
+        <img src="assets/images/SKILL BLOOM 2.jpg" alt="AI technology">
+        <img src="assets/images/SKILL BLOOM 3.jpg" alt="Business professionals">
+      </div>
+    </section>
+
+    <!-- Login Modal - UNCHANGED IDs/STRUCTURE -->
+    <div id="loginModal" class="login-modal">
+      <div class="login-modal-content">
+        <span class="login-modal-close" onclick="closeLoginModal()">&times;</span>
+        
+        <div id="roleSelection">
+          <h2>Choose Your Role</h2>
+          <div class="role-cards">
+            <div class="role-card" onclick="selectRole('student', event)">
+              <i class="fas fa-graduation-cap"></i>
+              <h3>Student</h3>
+              <p>Find career guidance and jobs</p>
+            </div>
+            <div class="role-card" onclick="selectRole('business', event)">
+              <i class="fas fa-briefcase"></i>
+              <h3>Business Owner</h3>
+              <p>Hire top campus talent</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="loginForm" style="display: none;">
+          <h2 id="formTitle">Student Login</h2>
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="userId">Email</label>
+              <input type="email" id="userId" required placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+            <button type="submit" class="login-submit-btn">Login Securely</button>
+          </form>
+          
+          <div class="form-links">
+            <a href="#" id="createAccountLink" class="form-link">Don't have an account? Create Account</a>
+            <a href="login.html" class="form-link forgot-password">Forgot Password?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="services" class="animate-on-scroll">
+      <span id="features" class="section-anchor" aria-hidden="true"></span>
+      <h2>What SkillBloom Offers</h2>
+      <div class="cards">
+        <div class="card">
+          <h3><i class="fas fa-graduation-cap"></i> Students</h3>
+          <p>Find flexible work, build real skills, and earn while you learn. Perfect for campus life.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-briefcase"></i> Businesses</h3>
+          <p>Hire top campus talent easily with skill-based matching. Fast, reliable, local.</p>
+        </div>
+        <div class="card">
+          <h3><i class="fas fa-chart-line"></i> Growth</h3>
+          <p>AI-powered skill matching for mutual success. Scale your opportunities effortlessly.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="animate-on-scroll">
+      <div class="about">
+        <h2>About SkillBloom</h2>
+        <p>
+          SkillBloom bridges the gap between ambitious students and innovative local businesses.
+          <br><br>
+          Using cutting-edge AI matching, we connect talent with opportunities that matter.
+          <br><br>
+          <strong>Powered by ADI Studio</strong> – Building the future of campus careers.
+        </p>
+      </div>
+    </section>
+
+    <section class="cta animate-on-scroll">
+      <h2>Ready to Earn, Learn & Grow?</h2>
+      <p style="font-size: 1.2rem; opacity: 0.9; margin-bottom: 2rem;">Join thousands transforming their careers.</p>
+      <button onclick="openLoginModal(); return false;">Join SkillBloom Today <i class="fas fa-arrow-right"></i></button>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom. All rights reserved. | Powered by <strong>ADI Studio</strong>
+  </footer>
+</body>
+</html>
+

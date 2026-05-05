@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Student ID | SkillBloom</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background:#f4f1ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+  padding:2rem 1rem;
+  font-family:Arial, sans-serif;
+}
+
+.id-card {
+  width:min(320px, 100%);
+  background:white;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  overflow:hidden;
+}
+
+.id-header {
+  background:#7b3fe4;
+  color:white;
+  text-align:center;
+  padding:1rem;
+}
+
+.id-body {
+  padding:1.2rem;
+  text-align:center;
+}
+
+.id-body img {
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:3px solid #7b3fe4;
+  object-fit:cover;
+  margin-bottom:0.6rem;
+}
+
+.photo-fallback {
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:3px solid #7b3fe4;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 0.6rem;
+  background:#f1ecff;
+  color:#7b3fe4;
+  font-size:2rem;
+  font-weight:700;
+}
+
+.id-body h3 {
+  margin:0.4rem 0;
+}
+
+.id-body p {
+  margin:0.6rem 0;
+}
+
+.id-footer {
+  background:#f1ecff;
+  padding:0.8rem;
+  text-align:center;
+  font-size:0.85rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="id-card">
+  <div class="id-header">
+    <h2>SkillBloom</h2>
+    <p>Student ID Card</p>
+  </div>
+
+  <div class="id-body">
+    <img id="photo">
+    <div id="photoFallback" class="photo-fallback"></div>
+    <h3 id="name"></h3>
+    <p id="skill"></p>
+    <p><strong>ID:</strong> <span id="uid"></span></p>
+  </div>
+
+  <div class="id-footer">
+    Powered by Adi Studio
+  </div>
+</div>
+
+<script>
+function readJSON(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || 'null');
+  } catch (error) {
+    return null;
+  }
+}
+
+function cleanValue(value) {
+  if (value === undefined || value === null) return '';
+  const text = String(value).trim();
+  if (!text || text === 'undefined' || text === 'null') return '';
+  return text;
+}
+
+function normalizeUser(user) {
+  const profileData = user?.profileData || {};
+  const skills = Array.isArray(user?.skills)
+    ? user.skills
+    : Array.isArray(profileData.skills)
+      ? profileData.skills
+      : [];
+
+  return {
+    id: cleanValue(user?.id || profileData.id || localStorage.userId),
+    name: cleanValue(user?.name || profileData.name || localStorage.name) || 'Student',
+    email: cleanValue(user?.email || profileData.email),
+    skill: cleanValue(skills.length ? skills.join(', ') : localStorage.skill) || 'Skill not set',
+    photoUrl: cleanValue(user?.profilePhoto || user?.photoUrl || profileData.photoUrl || localStorage.photo)
+  };
+}
+
+function renderID(user) {
+  const normalized = normalizeUser(user);
+  const photo = document.getElementById('photo');
+  const fallback = document.getElementById('photoFallback');
+  const initials = normalized.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(part => part[0].toUpperCase())
+    .join('') || 'S';
+
+  document.getElementById('name').innerText = normalized.name;
+  document.getElementById('skill').innerText = normalized.skill;
+  document.getElementById('uid').innerText = normalized.id ? `SB-STU-${normalized.id}` : 'Pending';
+
+  fallback.innerText = initials;
+
+  if (!normalized.photoUrl) {
+    photo.style.display = 'none';
+    fallback.style.display = 'flex';
+    return;
+  }
+
+  photo.onload = () => {
+    fallback.style.display = 'none';
+    photo.style.display = 'inline-block';
+  };
+  photo.onerror = () => {
+    photo.style.display = 'none';
+    fallback.style.display = 'flex';
+  };
+  photo.src = normalized.photoUrl;
+}
+
+async function loadID() {
+  const cachedUser = readJSON('skillbloom_auth_user');
+  if (cachedUser) renderID(cachedUser);
+
+  const token = localStorage.getItem('token');
+  if (!token) {
+    if (!cachedUser) renderID(null);
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/auth/user', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    const data = await response.json();
+
+    if (data.success && data.user) {
+      localStorage.setItem('skillbloom_auth_user', JSON.stringify(data.user));
+      renderID(data.user);
+    } else if (!cachedUser) {
+      renderID(null);
+    }
+  } catch (error) {
+    if (!cachedUser) renderID(null);
+  }
+}
+
+loadID();
+</script>
+
+</body>
+</html>

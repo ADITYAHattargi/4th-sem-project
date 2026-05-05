@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed | SkillBloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <nav class="animate-on-scroll">
+    <div class="logo">SkillBloom</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html" id="dashboardLink">Dashboard</a></li>
+      <li><a href="searchtab.html" class="search-link"><i class="fas fa-magnifying-glass"></i> Search</a></li>
+      <li><a href="create-post.html">+ Post</a></li>
+    </ul>
+    <div class="nav-buttons">
+      <button class="login-btn" onclick="goDashboard()">Profile</button>
+      <button class="start-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <main style="padding-top: 120px; max-width: 650px; margin: auto; padding: 2rem;">
+    <div class="animate-on-scroll">
+      <h2 style="text-align: center; margin-bottom: 2rem;">📱 Your Feed</h2>
+    </div>
+    <div class="cards" id="feed" style="gap: 1.5rem;">
+      <div class="card" style="text-align: center;">
+        <p style="opacity: 0.85;">Loading posts...</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 SkillBloom | Powered by ADI Studio
+  </footer>
+
+  <script>
+    const authUser = JSON.parse(localStorage.getItem('skillbloom_auth_user') || 'null');
+    const dashboardHref = authUser?.role === 'business' ? 'business-dashboard.html' : 'dashboard.html';
+    document.getElementById('dashboardLink').href = dashboardHref;
+
+    function escapeHTML(value) {
+      return String(value || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      }[char]));
+    }
+
+    function goDashboard() {
+      location.href = dashboardHref;
+    }
+
+    async function loadFeed() {
+      const feed = document.getElementById('feed');
+      try {
+        const response = await fetch('/api/posts?limit=30');
+        const posts = await response.json();
+        if (!response.ok) throw new Error(posts.error || 'Unable to load posts');
+
+        if (!posts.length) {
+          feed.innerHTML = '<div class="card" style="text-align: center;"><p style="opacity: 0.85;">No posts yet.</p></div>';
+          return;
+        }
+
+        feed.innerHTML = posts.map(post => `
+          <div class="card">
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center;">
+              <img src="${escapeHTML(post.user.profilePhoto || 'https://i.pravatar.cc/50')}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+              <div>
+                <h3 style="margin: 0;">${escapeHTML(post.user.name)}</h3>
+                <p style="opacity: 0.8; font-size: 0.9rem; margin: 0;">${escapeHTML(post.user.role)} • ${new Date(post.createdAt).toLocaleString()}</p>
+              </div>
+            </div>
+            <h3>${escapeHTML(post.title)}</h3>
+            <p>${escapeHTML(post.description)}</p>
+            ${post.imageUrl ? `<img src="${escapeHTML(post.imageUrl)}" style="width: 100%; border-radius: 12px; margin-top: 1rem;">` : ''}
+          </div>
+        `).join('');
+      } catch (error) {
+        feed.innerHTML = `<div class="card" style="text-align: center;"><p style="opacity: 0.85;">${escapeHTML(error.message)}</p></div>`;
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFeed);
+
+    // Scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.target.classList.add('visible'));
+    });
+    document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

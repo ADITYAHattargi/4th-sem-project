@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Business Dashboard | SkillBloom</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* { box-sizing:border-box; font-family:Arial, sans-serif; }
+body { margin:0; background:#fafafa; }
+
+/* Header */
+header {
+  background:#7b3fe4;
+  color:white;
+  padding:12px;
+  text-align:center;
+}
+
+/* Profile */
+.profile {
+  background:white;
+  padding:15px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  position:relative;
+}
+
+.profile img {
+  width:90px;
+  height:90px;
+  border-radius:12px;
+  border:3px solid #7b3fe4;
+  object-fit:cover;
+  cursor:pointer;
+}
+
+.profile-info h2 {
+  margin:0;
+}
+
+.profile-info p {
+  margin:4px 0;
+  font-size:13px;
+}
+
+/* Highlight / Hiring Note */
+.highlight {
+  position:absolute;
+  right:15px;
+  top:20px;
+  background:#ffeb3b;
+  padding:8px 12px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* Bio */
+.bio-box {
+  background:white;
+  margin:8px;
+  padding:15px;
+  border-radius:10px;
+}
+
+.rating { color:#fbbc04; font-size:14px; }
+.category { color:#555; margin-bottom:8px; }
+
+.services span {
+  background:#e8f0fe;
+  padding:5px 10px;
+  border-radius:15px;
+  font-size:12px;
+  margin-right:6px;
+}
+
+.info div {
+  display:flex;
+  align-items:center;
+  margin:8px 0;
+  font-size:14px;
+}
+
+.info div span { margin-left:8px; }
+
+/* Map */
+.map-box {
+  margin-top:10px;
+  height:220px;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+/* Upload */
+.upload-box {
+  background:white;
+  margin:8px;
+  padding:15px;
+  border-radius:10px;
+}
+
+.connection-box {
+  background:white;
+  margin:8px;
+  padding:15px;
+  border-radius:10px;
+}
+
+.connection-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:8px;
+  margin-top:10px;
+}
+
+.connection-card {
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:12px;
+}
+
+.connection-card h4 {
+  margin:0 0 4px;
+}
+
+.connection-card p {
+  margin:5px 0;
+  color:#555;
+  font-size:13px;
+}
+
+.status-pill {
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#e8f0fe;
+  color:#333;
+  font-size:12px;
+  font-weight:bold;
+  text-transform:capitalize;
+}
+
+.status-pill.accepted { background:#dff7e8; color:#137333; }
+.status-pill.rejected { background:#fde8e8; color:#b3261e; }
+
+.connection-actions {
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.connection-box input,
+.connection-box select {
+  width:100%;
+  padding:9px;
+  border:1px solid #ddd;
+  border-radius:8px;
+}
+
+button {
+  background:#7b3fe4;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:6px;
+}
+
+/* Feed */
+.feed {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  margin:8px;
+}
+
+.feed img, .feed video {
+  width:100%;
+  height:120px;
+  object-fit:cover;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2 id="bizName">Business Name</h2>
+</header>
+
+<!-- Profile -->
+<div class="profile">
+  <input type="file" id="logoInput" hidden accept="image/*">
+  <img id="bizLogo" onclick="logoInput.click()">
+
+  <div class="profile-info">
+    <h2 id="bizTitle"></h2>
+    <p><strong>ID:</strong> <span id="bizId"></span></p>
+    <p><strong>Email:</strong> <span id="bizEmail"></span></p>
+  </div>
+
+  <div class="highlight" onclick="editHighlight()">
+    <span id="highlightText">🎥 Hiring Videographer</span>
+  </div>
+</div>
+
+<!-- Bio -->
+<div class="bio-box">
+  <div class="rating">⭐ 4.7 (543 reviews)</div>
+  <div class="category" id="bizCategory">Restaurant</div>
+
+  <div class="services">
+    <span>✔ Dine-in</span>
+    <span>✔ Delivery</span>
+    <span>✔ Pickup</span>
+  </div>
+
+  <div class="info">
+    <div>📍 <span id="address"></span></div>
+    <div>⏰ <span id="timing"></span></div>
+    <div>📞 <span id="phone"></span></div>
+  </div>
+
+  <div class="map-box">
+    <iframe id="map" width="100%" height="100%" style="border:0"></iframe>
+  </div>
+</div>
+
+<!-- Student Connections -->
+<div class="connection-box">
+  <h3>Find Students</h3>
+  <div class="connection-grid">
+    <select id="studentSkillFilter">
+      <option value="">All skills</option>
+      <option>Content Creation</option>
+      <option>Social Media Marketing</option>
+      <option>Event Management</option>
+      <option>Dancing</option>
+      <option>Acting</option>
+      <option>Photography</option>
+    </select>
+    <input type="text" id="studentCityFilter" placeholder="City">
+    <button onclick="loadStudents()">Search Students</button>
+  </div>
+  <div id="studentResults" class="connection-grid"></div>
+</div>
+
+<div class="connection-box">
+  <h3>Student Responses</h3>
+  <div id="businessConnections" class="connection-grid"></div>
+</div>
+
+<!-- Upload -->
+<div class="upload-box">
+  <h3>Add Post</h3>
+  <select id="postType">
+    <option value="image">📷 Photo</option>
+  </select>
+  <br><br>
+  <input type="file" id="postFile">
+  <br>
+  <button onclick="uploadPost()">Upload</button>
+</div>
+
+<!-- Feed -->
+<div class="feed" id="feed"></div>
+
+<script>
+const logoPlaceholder = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' rx='14' fill='%237b3fe4'/%3E%3Ctext x='75' y='83' font-family='Arial,sans-serif' font-size='24' font-weight='700' fill='white' text-anchor='middle'%3ELogo%3C/text%3E%3C/svg%3E";
+
+function readJSON(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "null");
+  } catch (error) {
+    return null;
+  }
+}
+
+function escapeHTML(value) {
+  return String(value || "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[char]));
+}
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+async function apiFetch(url, options = {}) {
+  const token = getToken();
+  const headers = {
+    ...(options.headers || {})
+  };
+
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (options.body && !(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const response = await fetch(url, { ...options, headers });
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.error || "Request failed");
+  }
+
+  return data;
+}
+
+function getCurrentBusiness() {
+  const currentBusiness = readJSON("skillbloom_current_business");
+  if (currentBusiness) return currentBusiness;
+
+  const authUser = readJSON("skillbloom_auth_user") || readJSON("skillbloom_logged_user");
+  if (authUser && authUser.role === "business") {
+    return {
+      id: authUser.id,
+      businessId: authUser.businessId || `BUS-${authUser.id || Date.now()}`,
+      businessName: authUser.businessName || authUser.companyName || authUser.name,
+      ownerName: authUser.name,
+      email: authUser.email,
+      category: authUser.industry || "Business",
+      phone: authUser.phone || "",
+      address: authUser.city || "",
+      email: authUser.email || "",
+      logo: authUser.profilePhoto || authUser.photoUrl || ""
+    };
+  }
+
+  if (localStorage.businessName || localStorage.businessId) {
+    return {
+      businessId: localStorage.businessId || "BUSINESS-ID",
+      businessName: localStorage.businessName || "Business Dashboard",
+      category: localStorage.businessCategory || "Business",
+      phone: localStorage.businessPhone || "",
+      address: localStorage.businessAddress || "",
+      email: localStorage.businessEmail || "",
+      timing: localStorage.businessTiming || "Open now",
+      logo: localStorage.businessLogo || "",
+      highlight: localStorage.businessHighlight || "Add hiring update"
+    };
+  }
+
+  return {
+    businessId: "BUSINESS-ID",
+    businessName: "Business Dashboard",
+    category: "Business",
+    phone: "",
+    address: "",
+    email: "",
+    timing: "Open now",
+    logo: "",
+    highlight: "Add hiring update"
+  };
+}
+
+function saveCurrentBusiness(profile) {
+  localStorage.setItem("skillbloom_current_business", JSON.stringify(profile));
+  localStorage.businessId = profile.businessId || "";
+  localStorage.businessName = profile.businessName || "";
+  localStorage.businessCategory = profile.category || "";
+  localStorage.businessPhone = profile.phone || "";
+  localStorage.businessEmail = profile.email || "";
+  localStorage.businessAddress = profile.address || "";
+  localStorage.businessTiming = profile.timing || "";
+  localStorage.businessLogo = profile.logo || "";
+  localStorage.businessHighlight = profile.highlight || "";
+}
+
+const business = getCurrentBusiness();
+saveCurrentBusiness(business);
+
+/* Load Data */
+bizName.innerText = business.businessName || "Business Dashboard";
+bizTitle.innerText = business.businessName || "Business Dashboard";
+bizId.innerText = business.businessId || business.id || "BUSINESS-ID";
+bizEmail.innerText = business.email || "Not provided";
+bizLogo.src = business.logo || logoPlaceholder;
+bizCategory.innerText = business.category || "Business";
+address.innerText = business.address || "Add business location";
+phone.innerText = business.phone || "Add phone number";
+timing.innerText = business.timing || "Open now";
+highlightText.innerText = business.highlight || "Add hiring update";
+
+const mapQuery = encodeURIComponent(business.address || business.businessName || "India");
+map.src = business.map || `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+
+/* Logo Upload */
+logoInput.onchange = () => {
+  const file = logoInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    business.logo = reader.result;
+    bizLogo.src = business.logo;
+    saveCurrentBusiness(business);
+  };
+  reader.readAsDataURL(file);
+};
+
+/* Highlight Edit */
+function editHighlight() {
+  const text = prompt("Enter important note / hiring info:");
+  if (text) {
+    business.highlight = text;
+    highlightText.innerText = text;
+    saveCurrentBusiness(business);
+  }
+}
+
+/* Posts */
+async function renderFeed() {
+  const userId = business.id;
+  if (!userId) {
+    feed.innerHTML = "";
+    return;
+  }
+
+  feed.innerHTML = "<p>Loading posts...</p>";
+
+  try {
+    const posts = await apiFetch(`/api/posts?userId=${encodeURIComponent(userId)}&limit=12`);
+    feed.innerHTML = "";
+
+    if (!posts.length) {
+      feed.innerHTML = "<p>No posts uploaded yet.</p>";
+      return;
+    }
+
+    posts.forEach(post => {
+      if (post.imageUrl) {
+        let img = document.createElement("img");
+        img.src = post.imageUrl;
+        img.alt = post.title || "Business post";
+        feed.appendChild(img);
+      } else {
+        let item = document.createElement("div");
+        item.className = "connection-card";
+        item.innerHTML = `<h4>${escapeHTML(post.title)}</h4><p>${escapeHTML(post.description)}</p>`;
+        feed.appendChild(item);
+      }
+    });
+  } catch (error) {
+    feed.innerHTML = `<p>${escapeHTML(error.message)}</p>`;
+  }
+}
+
+async function uploadPost() {
+  const file = postFile.files[0];
+  const token = getToken();
+  if (!token) return alert("Login through the main login page before posting.");
+  if (!file) return alert("Select a file");
+
+  const formData = new FormData();
+  formData.append("title", highlightText.innerText || "Business post");
+  formData.append("caption", highlightText.innerText || "");
+  formData.append("media", file);
+
+  try {
+    const response = await fetch("/api/posts", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Upload failed");
+    postFile.value = "";
+    renderFeed();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+renderFeed();
+
+async function loadStudents() {
+  const token = getToken();
+  if (!token) {
+    studentResults.innerHTML = "<p>Login through the main login page to invite students.</p>";
+    return;
+  }
+
+  const skill = studentSkillFilter.value;
+  const city = studentCityFilter.value.trim();
+  const params = new URLSearchParams({ role: "student", limit: "12" });
+  if (skill) params.set("skills", skill);
+  if (city) params.set("city", city);
+
+  studentResults.innerHTML = "<p>Loading students...</p>";
+
+  try {
+    const students = await apiFetch(`/api/profiles?${params.toString()}`);
+    renderStudents(students);
+  } catch (error) {
+    studentResults.innerHTML = `<p>${escapeHTML(error.message)}</p>`;
+  }
+}
+
+function renderStudents(students) {
+  if (!students.length) {
+    studentResults.innerHTML = "<p>No matching students found.</p>";
+    return;
+  }
+
+  studentResults.innerHTML = students.map(student => {
+    const skills = Array.isArray(student.skills) && student.skills.length
+      ? student.skills.join(", ")
+      : "No skills listed";
+
+    return `
+      <div class="connection-card">
+        <h4>${escapeHTML(student.name)}</h4>
+        <p>${escapeHTML(student.city || "Location not set")}</p>
+        <p>${escapeHTML(skills)}</p>
+        <button onclick="inviteStudent(${Number(student.id)})">Invite</button>
+      </div>
+    `;
+  }).join("");
+}
+
+async function inviteStudent(studentId) {
+  const message = prompt("Message for the student:", business.highlight || "We would like to connect for an opportunity.");
+  if (message === null) return;
+
+  try {
+    await apiFetch("/api/connections", {
+      method: "POST",
+      body: JSON.stringify({ studentId, message })
+    });
+    alert("Invite sent");
+    loadBusinessConnections();
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+async function loadBusinessConnections() {
+  if (!getToken()) {
+    businessConnections.innerHTML = "<p>Login through the main login page to view responses.</p>";
+    return;
+  }
+
+  businessConnections.innerHTML = "<p>Loading responses...</p>";
+
+  try {
+    const connections = await apiFetch("/api/connections/business");
+    renderBusinessConnections(connections);
+  } catch (error) {
+    businessConnections.innerHTML = `<p>${escapeHTML(error.message)}</p>`;
+  }
+}
+
+function renderBusinessConnections(connections) {
+  if (!connections.length) {
+    businessConnections.innerHTML = "<p>No student invites yet.</p>";
+    return;
+  }
+
+  businessConnections.innerHTML = connections.map(connection => {
+    const skills = Array.isArray(connection.student.skills) && connection.student.skills.length
+      ? connection.student.skills.join(", ")
+      : "No skills listed";
+
+    return `
+      <div class="connection-card">
+        <h4>${escapeHTML(connection.student.name)}</h4>
+        <p>${escapeHTML(connection.student.city || "Location not set")}</p>
+        <p>${escapeHTML(skills)}</p>
+        <p>${escapeHTML(connection.message || "No message")}</p>
+        <span class="status-pill ${escapeHTML(connection.status)}">${escapeHTML(connection.status)}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+loadStudents();
+loadBusinessConnections();
+</script>
+
+</body>
+</html>
