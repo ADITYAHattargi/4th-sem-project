@@ -6,8 +6,9 @@ export default async function handler(req, res) {
     return;
   }
 
-  const path = Array.isArray(req.query.path) ? req.query.path.join('/') : '';
-  const targetUrl = `${apiBaseUrl.replace(/\/$/, '')}/api/${path}`;
+  const requestUrl = new URL(req.url, 'http://localhost');
+  const path = requestUrl.pathname.replace(/^\/api\/?/, '');
+  const targetUrl = `${apiBaseUrl.replace(/\/$/, '')}/api/${path}${requestUrl.search}`;
   const headers = { ...req.headers };
 
   delete headers.host;

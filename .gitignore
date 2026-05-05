@@ -4,4 +4,5 @@ node_modules/
 *.log
 .claude/
 .wrangler/
+.vercel/
 legacy/
